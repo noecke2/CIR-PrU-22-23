@@ -18,7 +18,6 @@ table(training_data$is_satoyama2)
 colSums(is.na(training_data))
 dim(training_data)
 head(training_data)
-
 summary(training_data)
 
 training_data2 <- training_data %>%
