@@ -21,7 +21,7 @@ set.seed(1)
 training_samples <- ag_dataset_model$is_satoyama2 %>% 
   createDataPartition(p = 0.8, list = FALSE)
 training_data  <- ag_dataset_model[training_samples, ]
-testing_data <- ag_dataset_model[-training_samples, ]
+testing_data <- ag_dataset_model[-training_samples]
 
 # Are there NA values present in the data?
 is.na(final_data)
