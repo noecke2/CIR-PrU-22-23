@@ -14,6 +14,8 @@ library(gt)
 library(caret)
 library(nnet)
 library(broom)
+source("lasso_models/combine_results.R")
+
 
 
 # Load in Will's Data and make Training/Testing ---------------------------
@@ -59,18 +61,22 @@ y <- full_train$is_satoyama2
 
 # cross validation and lasso
 set.seed(2)
-full_cv_fit_lasso <- cv.glmnet(x, y, alpha = 1, nfolds = 10, family = "multinomial")
+full_cv_fit_lasso <- cv.glmnet(x, y, alpha = 1, 
+                               nfolds = 10, 
+                               family = "multinomial")
 
 plot(full_cv_fit_lasso,main = " ")
-title(main = "Fig. 3: Lasso Regression with 5-fold Cross Validation", line = 3, font.main = 1)
+title(main = "Fig. 3: Lasso Regression with 5-fold Cross Validation - Full Model", line = 3, font.main = 1)
 
+# Lambda values for full model
 full_cv_fit_lasso$lambda.min
 full_cv_fit_lasso$lambda.1se
 
-coef(full_cv_fit_lasso, s = "lambda.1se")
-coef(full_cv_fit_lasso, s = "lambda.min")
+combine_results(full_cv_fit_lasso)
 
 
+
+#https://zitaoshen.rbind.io/project/machine_learning/how-to-plot-roc-curve-for-multiple-classes/
 
 # Generate plot of coefficients ------------------------------------------------
 

@@ -14,6 +14,8 @@ library(gt)
 library(caret)
 library(nnet)
 library(broom)
+source("lasso_models/combine_results.R")
+
 
 
 # Load in Will's Data and make Training/Testing ---------------------------
@@ -62,13 +64,12 @@ set.seed(2)
 natural_cv_fit_lasso <- cv.glmnet(x, y, alpha = 1, nfolds = 10, family = "multinomial")
 
 plot(natural_cv_fit_lasso,main = " ")
-title(main = "Fig. 3: Lasso Regression with 5-fold Cross Validation", line = 3, font.main = 1)
+title(main = "Fig. 3: Lasso Regression with 5-fold Cross Validation - Natural Model", line = 3, font.main = 1)
 
 natural_cv_fit_lasso$lambda.min
 natural_cv_fit_lasso$lambda.1se
 
-coef(natural_cv_fit_lasso, s = "lambda.1se")
-coef(natural_cv_fit_lasso, s = "lambda.min")
+combine_results(natural_cv_fit_lasso)
 
 
 

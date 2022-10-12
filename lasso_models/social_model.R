@@ -14,6 +14,7 @@ library(gt)
 library(caret)
 library(nnet)
 library(broom)
+source("lasso_models/combine_results.R")
 
 
 # Load in Will's Data and make Training/Testing ---------------------------
@@ -40,18 +41,22 @@ social <- cols[c(2:41, 47:50)]
 natural <- cols[c(42:46)]
 full <- c(social, natural)
 
-
-# Define training data with just natural variables
-social_train <- training_data[c(social, "is_satoyama2")]
-
-
 # Run lasso on natural training data --------------------------------------
+
+
+# Define training data with just social variables
+social_train <- training_data[c(social, "is_satoyama2")]
 
 # define x, the explanatory variables
 x <- data.matrix(social_train[, !(colnames(social_train) == "is_satoyama2")])
 
 # define y, the response variable (is_satoyama2)
-y <- social_train$is_satoyama2
+social_train2 <- social_train %>%
+  mutate(is_satoyama3 = ifelse(is_satoyama2 == "urban", 0, ifelse(is_satoyama2 == "okuyama", 1, 2)))
+
+
+
+y <- social_train2$is_satoyama3
 
 # Run lasso using cv.glmnet 
 ### This does cross validation for us (10 fold by default)
@@ -59,17 +64,19 @@ y <- social_train$is_satoyama2
 
 # cross validation and lasso
 set.seed(2)
-social_cv_fit_lasso <- cv.glmnet(x, y, alpha = 1, nfolds = 10, family = "multinomial")
+social_cv_fit_lasso <- cv.glmnet(x, y, alpha = 1, 
+                                 nfolds = 10, 
+                                 family = "multinomial")
 
 plot(social_cv_fit_lasso,main = " ")
-title(main = "Fig. 3: Lasso Regression with 5-fold Cross Validation", line = 3, font.main = 1)
+title(main = "Lasso Regression with 5-fold Cross Validation - Social Model", line = 3, font.main = 1)
 
+# Lambda values for the model
 social_cv_fit_lasso$lambda.min
 social_cv_fit_lasso$lambda.1se
 
-coef(social_cv_fit_lasso, s = "lambda.1se")
-coef(social_cv_fit_lasso, s = "lambda.min")
-
+### Display coefficients for all 3 layers
+combine_results(social_cv_fit_lasso)
 
 
 # Generate plot of coefficients ------------------------------------------------
