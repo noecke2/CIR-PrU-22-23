@@ -15,6 +15,8 @@ library(caret)
 library(nnet)
 library(broom)
 source("lasso_models/combine_results.R")
+source("lasso_models/build_multinomial.R")
+
 
 
 
@@ -63,7 +65,9 @@ y <- full_train$is_satoyama2
 set.seed(2)
 full_cv_fit_lasso <- cv.glmnet(x, y, alpha = 1, 
                                nfolds = 10, 
-                               family = "multinomial")
+                               family = "multinomial",
+                               type.multinomial = "grouped",
+                               type.measure = "class")
 
 plot(full_cv_fit_lasso,main = " ")
 title(main = "Fig. 3: Lasso Regression with 5-fold Cross Validation - Full Model", line = 3, font.main = 1)
@@ -88,3 +92,35 @@ full_fit_lasso <- glmnet(x, y, alpha = 1, lambda = lambdas, family = "multinomia
 
 plot(full_fit_lasso, xvar = "lambda", label = TRUE)
 title(main = "Figure 4: Lasso Regression", line = 3, font.main = 1)
+
+
+
+
+
+# Full table predictors and accuracy ---------------------------------------
+
+
+
+acc_vec <- vector(mode = "numeric", length = 100)
+preds_vec <- vector(mode = "numeric", length = 100)
+
+lambdas <- 10^seq(-5, 0, length = 100)
+
+acc_tbl <- tibble(lambda = lambdas)
+
+
+idx <- 1
+for (i in lambdas){
+  mult_model <- build_multinomial(full_cv_fit_lasso, lambda = i)
+  acc <- accuracy(mult_model)
+  num_preds <- length(mult_model$coefnames) - 1
+  preds_vec[idx] = num_preds
+  acc_vec[idx] = acc
+  idx <- idx + 1
+}
+
+acc_tbl %>%
+  mutate(acc = acc_vec,
+         num_preds = preds_vec) %>% 
+  print(n = 100)
+

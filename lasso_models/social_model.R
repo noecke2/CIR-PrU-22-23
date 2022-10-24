@@ -15,6 +15,8 @@ library(caret)
 library(nnet)
 library(broom)
 source("lasso_models/combine_results.R")
+source("lasso_models/build_multinomial.R")
+
 
 
 # Load in Will's Data and make Training/Testing ---------------------------
@@ -66,7 +68,9 @@ y <- social_train2$is_satoyama3
 set.seed(2)
 social_cv_fit_lasso <- cv.glmnet(x, y, alpha = 1, 
                                  nfolds = 10, 
-                                 family = "multinomial")
+                                 family = "multinomial",
+                                 type.multinomial = "grouped",
+                                 type.measure = "class")
 
 plot(social_cv_fit_lasso,main = " ")
 title(main = "Lasso Regression with 5-fold Cross Validation - Social Model", line = 3, font.main = 1)
@@ -76,7 +80,7 @@ social_cv_fit_lasso$lambda.min
 social_cv_fit_lasso$lambda.1se
 
 ### Display coefficients for all 3 layers
-combine_results(social_cv_fit_lasso)
+combine_results(social_cv_fit_lasso, lambda = social_cv_fit_lasso$lambda[15])
 
 
 # Generate plot of coefficients ------------------------------------------------
@@ -89,3 +93,39 @@ social_fit_lasso <- glmnet(x, y, alpha = 1, lambda = lambdas, family = "multinom
 
 plot(social_fit_lasso, xvar = "lambda", label = TRUE)
 title(main = "Figure 4: Lasso Regression", line = 3, font.main = 1)
+
+
+
+
+# Building multinomial models with social vars ----------------------------
+
+accuracy(build_multinomial(social_cv_fit_lasso, lambda = social_cv_fit_lasso$lambda.1se))
+
+accuracy(build_multinomial(social_cv_fit_lasso, lambda = social_cv_fit_lasso$lambda.min))
+
+accuracy(build_multinomial(social_cv_fit_lasso, lambda = 0.06))
+
+acc_vec <- vector(mode = "numeric", length = 100)
+preds_vec <- vector(mode = "numeric", length = 100)
+
+lambdas <- 10^seq(-5, 0, length = 100)
+
+acc_tbl <- tibble(lambda = lambdas)
+
+
+idx <- 1
+for (i in lambdas){
+  mult_model <- build_multinomial(social_cv_fit_lasso, lambda = i)
+  acc <- accuracy(mult_model)
+  num_preds <- length(mult_model$coefnames) - 1
+  preds_vec[idx] = num_preds
+  acc_vec[idx] = acc
+  idx <- idx + 1
+}
+
+acc_tbl %>%
+  mutate(acc = acc_vec,
+         num_preds = preds_vec) %>% 
+  print(n = 100)
+
+
