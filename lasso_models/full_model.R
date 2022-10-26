@@ -70,13 +70,13 @@ full_cv_fit_lasso <- cv.glmnet(x, y, alpha = 1,
                                type.measure = "class")
 
 plot(full_cv_fit_lasso,main = " ")
-title(main = "Fig. 3: Lasso Regression with 5-fold Cross Validation - Full Model", line = 3, font.main = 1)
+title(main = "Fig. 3: Lasso Regression with 10-fold Cross Validation - Full Model", line = 3, font.main = 1)
 
 # Lambda values for full model
 full_cv_fit_lasso$lambda.min
 full_cv_fit_lasso$lambda.1se
 
-combine_results(full_cv_fit_lasso)
+combine_results(full_cv_fit_lasso, lambda = 0.0486)
 
 
 
@@ -88,10 +88,12 @@ combine_results(full_cv_fit_lasso)
 lambdas <- 10^seq(-25, 10, length = 100)
 
 # fit lasso with default lambdas
-full_fit_lasso <- glmnet(x, y, alpha = 1, lambda = lambdas, family = "multinomial")
+full_fit_lasso <- glmnet(x, y, alpha = 1, lambda = lambdas, family = "multinomial",
+                         type.multinomial = "grouped",
+                         type.measure = "class")
 
 plot(full_fit_lasso, xvar = "lambda", label = TRUE)
-title(main = "Figure 4: Lasso Regression", line = 3, font.main = 1)
+title(main = "Figure 4: Lasso Regression with All Variables", line = 3, font.main = 1)
 
 
 
