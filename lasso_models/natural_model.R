@@ -136,3 +136,28 @@ acc_tbl %>%
   mutate(acc = acc_vec,
          num_preds = preds_vec) %>% 
   print(n = 100)
+
+
+
+
+# Using cross validation multinomial approach  ----------------------------
+
+
+# Using less lambdas due to longer computational time
+
+natural_cv_tbl <- tibble()
+lambdas <- 10^seq(-5, 0, length = 50)
+
+
+for (i in lambdas){
+  
+  mult_tbl <- build_multinomial_cv(natural_cv_fit_lasso, lambda = i) %>%
+    mutate(lambda = i) 
+  natural_cv_tbl <- bind_rows(natural_cv_tbl, 
+                             mult_tbl)  
+}
+
+natural_cv_tbl %>%
+  group_by(lambda, num_preds) %>%
+  summarize(acc = mean(test_pred == test_actual)) %>% 
+  print(n = 100)

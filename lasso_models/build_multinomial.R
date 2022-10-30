@@ -35,9 +35,9 @@ accuracy <- function(x) {
 # }
 
 
-model <- multinom(as.formula(paste0("is_satoyama2", " ~ ", formula)), data = training_data)
-model$fitted.values
-accuracy(model)
+# model <- multinom(as.formula(paste0("is_satoyama2", " ~ ", formula)), data = training_data)
+# model$fitted.values
+# accuracy(model)
 
 # build_multinomial function - will build multinomial model using variables selected by lasso -------------------------------------------------------------------------
 
@@ -53,4 +53,15 @@ build_multinomial <- function(lasso_model, lambda) {
   mult_model <- multinom(as.formula(paste0("is_satoyama2", " ~ ", formula)), data = training_data)
   
   mult_model
+}
+
+
+build_multinomial_cv <- function(lasso_model, lambda){
+  
+  coefs <- rownames(combine_results(lasso_model, lambda))[-1]
+  
+  formula <- paste(coefs, collapse = " + ")
+  
+  multinomial_cv(formula)
+  
 }

@@ -16,7 +16,7 @@ library(nnet)
 library(broom)
 source("lasso_models/combine_results.R")
 source("lasso_models/build_multinomial.R")
-
+source("lasso_models/multinomial_cv.R")
 
 
 
@@ -122,8 +122,27 @@ for (i in lambdas){
   idx <- idx + 1
 }
 
+build_multinomial(full_cv_fit_lasso, lambda = 0.01)
+
 acc_tbl %>%
   mutate(acc = acc_vec,
          num_preds = preds_vec) %>% 
   print(n = 100)
 
+
+cv_tbl <- tibble()
+lambdas <- 10^seq(-5, 0, length = 50)
+
+
+for (i in lambdas){
+  
+  mult_tbl <- build_multinomial_cv(full_cv_fit_lasso, lambda = i) %>%
+                mutate(lambda = i) 
+  cv_tbl <- bind_rows(cv_tbl, 
+                      mult_tbl)  
+}
+
+cv_tbl %>%
+  group_by(lambda, num_preds) %>%
+  summarize(acc = mean(test_pred == test_actual)) %>% 
+    print(n = 100)
