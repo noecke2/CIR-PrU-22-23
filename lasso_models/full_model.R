@@ -127,3 +127,8 @@ acc_tbl %>%
          num_preds = preds_vec) %>% 
   print(n = 100)
 
+build_multinomial(full_cv_fit_lasso, lambda = 0.0870)
+
+
+build_multinomial(full_cv_fit_lasso, lambda = 0.0774)
+

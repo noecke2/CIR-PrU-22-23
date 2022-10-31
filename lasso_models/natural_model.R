@@ -136,3 +136,8 @@ acc_tbl %>%
   mutate(acc = acc_vec,
          num_preds = preds_vec) %>% 
   print(n = 100)
+
+
+build_multinomial(natural_cv_fit_lasso, lambda = 0.00001)
+
+
