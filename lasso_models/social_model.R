@@ -128,4 +128,32 @@ acc_tbl %>%
          num_preds = preds_vec) %>% 
   print(n = 100)
 
+<<<<<<< HEAD
 build_multinomial(social_cv_fit_lasso, lambda = 0.175)
+=======
+
+
+
+# Using cross validation multinomial approach  ----------------------------
+
+
+# Using less lambdas due to longer computational time
+
+social_cv_tbl <- tibble()
+lambdas <- 10^seq(-5, 0, length = 50)
+
+
+for (i in lambdas){
+  
+  mult_tbl <- build_multinomial_cv(social_cv_fit_lasso, lambda = i) %>%
+    mutate(lambda = i) 
+  social_cv_tbl <- bind_rows(social_cv_tbl, 
+                      mult_tbl)  
+}
+
+social_cv_tbl %>%
+  group_by(lambda, num_preds) %>%
+  summarize(acc = mean(test_pred == test_actual)) %>% 
+  print(n = 100)
+
+>>>>>>> c124f2f94027e885e8835381e801708f0e24ab75

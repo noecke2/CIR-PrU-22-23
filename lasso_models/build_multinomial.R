@@ -54,3 +54,14 @@ build_multinomial <- function(lasso_model, lambda) {
   
   mult_model
 }
+
+
+build_multinomial_cv <- function(lasso_model, lambda){
+  
+  coefs <- rownames(combine_results(lasso_model, lambda))[-1]
+  
+  formula <- paste(coefs, collapse = " + ")
+  
+  multinomial_cv(formula)
+  
+}
