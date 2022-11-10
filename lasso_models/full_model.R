@@ -144,13 +144,11 @@ acc_tbl %>%
          num_preds = preds_vec) %>% 
   print(n = 100)
 
-<<<<<<< HEAD
 build_multinomial(full_cv_fit_lasso, lambda = 0.0870)
 
 
 build_multinomial(full_cv_fit_lasso, lambda = 0.0774)
 
-=======
 
 cv_tbl <- tibble()
 lambdas <- 10^seq(-5, 0, length = 50)
@@ -168,4 +166,3 @@ cv_tbl %>%
   group_by(lambda, num_preds) %>%
   summarize(acc = mean(test_pred == test_actual)) %>% 
     print(n = 100)
->>>>>>> c124f2f94027e885e8835381e801708f0e24ab75
