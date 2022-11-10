@@ -128,9 +128,7 @@ acc_tbl %>%
          num_preds = preds_vec) %>% 
   print(n = 100)
 
-<<<<<<< HEAD
 build_multinomial(social_cv_fit_lasso, lambda = 0.175)
-=======
 
 
 
@@ -156,4 +154,3 @@ social_cv_tbl %>%
   summarize(acc = mean(test_pred == test_actual)) %>% 
   print(n = 100)
 
->>>>>>> c124f2f94027e885e8835381e801708f0e24ab75

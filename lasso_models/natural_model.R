@@ -168,9 +168,6 @@ natural_cv_tbl %>%
   group_by(lambda, num_preds) %>%
   summarize(acc = mean(test_pred == test_actual)) %>% 
   print(n = 100)
-<<<<<<< HEAD
->>>>>>> c124f2f94027e885e8835381e801708f0e24ab75
-=======
 
 
 model_lasso_natural_4 <- multinom(is_satoyama2 ~ avg_altitude + prop_forest_area + prop_paddy_area + prop_ag_area, data = training_data)
@@ -204,4 +201,3 @@ ag_dataset %>%
 
 
 
->>>>>>> d93edd44bc9f1f4277143cd557078297e70ac655
