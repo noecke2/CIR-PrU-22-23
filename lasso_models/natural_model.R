@@ -16,6 +16,8 @@ library(nnet)
 library(broom)
 source("lasso_models/combine_results.R")
 source("lasso_models/build_multinomial.R")
+source("lasso_models/multinomial_cv.R")
+
 
 
 
@@ -161,3 +163,36 @@ natural_cv_tbl %>%
   group_by(lambda, num_preds) %>%
   summarize(acc = mean(test_pred == test_actual)) %>% 
   print(n = 100)
+
+
+model_lasso_natural_4 <- multinom(is_satoyama2 ~ avg_altitude + prop_forest_area + prop_paddy_area + prop_ag_area, data = training_data)
+predictions_lasso_natural_4 <- predict(model_lasso_natural_4, ag_dataset)
+predictions_lasso_natural_4_probs <- as.data.frame(predict(model_lasso_natural_4, ag_dataset, type = 'probs')) %>% 
+  rowwise() %>% 
+  mutate(predictions_lasso_natural_4_probmaxs = max(satoyama, okuyama, urban)) %>% 
+  mutate(predictions_lasso_natural_4_num = ifelse(satoyama > okuyama & satoyama > urban, '1',
+                                          ifelse(okuyama > satoyama & okuyama > urban, '2',
+                                                 ifelse(urban > satoyama & urban > okuyama, '0', NA))))
+ag_dataset$predictions_lasso_natural_4 <- predictions_lasso_natural_4
+ag_dataset$predictions_lasso_natural_4_probmaxs <- predictions_lasso_natural_4_probs$predictions_lasso_natural_4_probmaxs
+ag_dataset$predictions_lasso_natural_4_num <- predictions_lasso_natural_4_probs$predictions_lasso_natural_4_num
+
+# Write to CSV
+ag_dataset %>% 
+  # We need to add 'KEY' in front of the 10-digit shuraku key code, otherwise GIS will interpret it as an integer, not a string.
+  # I took these out with the Calculate Field tool in order to go back to the straight-up 10-digit code (key = !key![3:])
+  mutate(gis_key = paste0('KEY', key)) %>% 
+  select(59:63) %>%
+  write_csv('model_preds/natural_model_preds.csv')
+
+
+ag_dataset %>% 
+  # We need to add 'KEY' in front of the 10-digit shuraku key code, otherwise GIS will interpret it as an integer, not a string.
+  # I took these out with the Calculate Field tool in order to go back to the straight-up 10-digit code (key = !key![3:])
+  mutate(gis_key = paste0('KEY', key)) %>% 
+  select(59:63) %>%
+  count(predictions_lasso_natural_4)
+
+
+
+
