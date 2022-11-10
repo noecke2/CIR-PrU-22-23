@@ -16,6 +16,8 @@ library(nnet)
 library(broom)
 source("lasso_models/combine_results.R")
 source("lasso_models/build_multinomial.R")
+source("lasso_models/multinomial_cv.R")
+
 
 
 

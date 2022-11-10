@@ -37,7 +37,7 @@ set.seed(1)
 training_samples <- ag_dataset_model$is_satoyama2 %>% 
   createDataPartition(p = 0.8, list = FALSE)
 training_data  <- ag_dataset_model[training_samples, ]
-testing_data <- ag_dataset_model[-training_samples]
+testing_data <- ag_dataset_model[-training_samples,]
 
 # Sort out the different columns for social/natural/full
 cols <- colnames(ag_dataset)
@@ -48,6 +48,21 @@ full <- c(social, natural)
 
 # Define training data with just natural variables
 full_train <- training_data[c(full, "is_satoyama2")]
+
+
+# Table for displaying subset of the data for presentation ----------------
+
+
+
+# full_train %>%
+#   dplyr::select(natural[c(2:4)], social[c(35,37,43)], is_satoyama2) %>%
+#   mutate(across(!c(avg_slope, is_satoyama2), round, 3)) %>%
+#   rename(prop_6_fam = "prop_under6_families",
+#          is_satoyama = "is_satoyama2",
+#          prop_ag = "prop_ag_area",
+#          prop_forest = "prop_forest_area") %>%
+#   DT::datatable()
+  
 
 
 # Run lasso on natural training data --------------------------------------
