@@ -139,7 +139,7 @@ acc_tbl %>%
 
 
 <<<<<<< HEAD
-build_multinomial(natural_cv_fit_lasso, lambda = 0.00001)
+build_multinomial(natural_cv_fit_lasso, lambda = 0.123)
 
 
 =======
