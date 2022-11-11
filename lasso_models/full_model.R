@@ -166,3 +166,38 @@ cv_tbl %>%
   group_by(lambda, num_preds) %>%
   summarize(acc = mean(test_pred == test_actual)) %>% 
     print(n = 100)
+
+build_multinomial(full_cv_fit_lasso, lambda = 0.0754)
+
+model_lasso_full_9 <- multinom(is_satoyama2 ~ mtn_program_area + special_ag_mtn_villages + depopulated_area + num_orgs_mfngrants + pop_density + avg_altitude + prop_ag_area + prop_forest_area + prop_paddy_area, data = training_data)
+predictions_lasso_full_9 <- predict(model_lasso_full_9, ag_dataset)
+predictions_lasso_full_9_probs <- as.data.frame(predict(model_lasso_full_9, ag_dataset, type = 'probs')) %>% 
+  rowwise() %>% 
+  mutate(predictions_lasso_full_9_probmaxs = max(satoyama, okuyama, urban)) %>% 
+  mutate(predictions_lasso_full_9_num = ifelse(satoyama > okuyama & satoyama > urban, '1',
+                                                 ifelse(okuyama > satoyama & okuyama > urban, '2',
+                                                        ifelse(urban > satoyama & urban > okuyama, '0', NA))))
+ag_dataset$predictions_lasso_full_9 <- predictions_lasso_full_9
+ag_dataset$predictions_lasso_full_9_probmaxs <- predictions_lasso_full_9_probs$predictions_lasso_full_9_probmaxs
+ag_dataset$predictions_lasso_full_9_num <- predictions_lasso_full_9_probs$predictions_lasso_full_9_num
+
+# Write to CSV
+ag_dataset %>% 
+  # We need to add 'KEY' in front of the 10-digit shuraku key code, otherwise GIS will interpret it as an integer, not a string.
+  # I took these out with the Calculate Field tool in order to go back to the straight-up 10-digit code (key = !key![3:])
+  mutate(gis_key = paste0('KEY', key)) %>% 
+  select(75, 79:81) %>%
+  write_csv('model_preds/full_model_preds.csv')
+
+
+# Write only model preds to CSV
+ag_dataset %>%
+  mutate(gis_key = paste0('KEY', key)) %>%
+  select(75:84) %>%
+  write_csv('model_preds/all_model_preds.csv')
+
+
+
+
+
+
