@@ -8,7 +8,8 @@ Repository for St. Olaf CIR Project for 2022-23 academic year titled "Mapping *s
 
 ### `model_preds`
 
-This folder contains various different `.csv` files that hold different model predictions. The most notable of these are the `lasso_pair_prob_layers.csv` and `will_final_preds.csv`. The former holds our final model predictions, as well as the various probabilities assigned to each land type and whether they were solely one land type such as *satoyama* or were a mix of land types such as *satoyama_urban*. 
+This folder contains various different `.csv` files that hold different model predictions. The most notable of these are the `lasso_pair_prob_layers.csv` and `will_final_preds.csv`. The former holds our final model predictions, as well as the various probabilities assigned to each land type and whether they were solely one land type such as *satoyama* or were a mix of land types such as *satoyama_urban*. The latter holds Will's model's final predictions. 
+
 
 ### `lasso_models`
 
