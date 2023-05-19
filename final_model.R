@@ -664,3 +664,9 @@ ag_dataset %>%
   # I took these out with the Calculate Field tool in order to go back to the straight-up 10-digit code (key = !key![3:])
   mutate(gis_key = paste0('KEY', key)) %>% 
   write_csv('final_dataset.csv')
+
+# Code to export to ArcGIS to map full model comps - not really necessary 
+# ag_dataset %>%
+#   select(key, 63:74) %>%
+#   mutate(gis_key = paste0('KEY', key)) %>%
+#   write_csv("data/will_final_preds.csv")
