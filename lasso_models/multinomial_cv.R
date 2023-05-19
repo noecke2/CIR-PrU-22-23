@@ -1,4 +1,4 @@
-### Function to cross validate multinomial model 
+### Function to cross validate multinomial logistic model 
 
 library(nnet)
 library(caret)
@@ -42,6 +42,8 @@ library(tidyverse)
 # # Select the relevant columns
 # ag_dataset_model <- ag_dataset_model[c(full, "is_satoyama2")]
 
+
+# Cross validation function -----------------------------------------------
 
 
 multinomial_cv <- function(formula) {

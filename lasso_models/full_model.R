@@ -4,7 +4,7 @@
 
 
 
-# Load in libraries --------------------------------------------------------
+# Load in libraries and functions --------------------------------------------------------
 
 library(Matrix)
 library(glmnet)
@@ -181,13 +181,25 @@ ag_dataset$predictions_lasso_full_9 <- predictions_lasso_full_9
 ag_dataset$predictions_lasso_full_9_probmaxs <- predictions_lasso_full_9_probs$predictions_lasso_full_9_probmaxs
 ag_dataset$predictions_lasso_full_9_num <- predictions_lasso_full_9_probs$predictions_lasso_full_9_num
 
+# Adding each class's probability
+ag_dataset$satoyama_prob <- predictions_lasso_full_9_probs$satoyama
+ag_dataset$okuyama_prob <- predictions_lasso_full_9_probs$okuyama
+ag_dataset$urban_prob <- predictions_lasso_full_9_probs$urban
+
+
+# conflicts involve satoyama (no disagreement between okuyama and urban)
+predictions_lasso_full_9_probs %>%
+  # count(predictions_lasso_full_9_num) %>%
+  filter(predictions_lasso_full_9_probmaxs < 0.75) %>%
+  filter(satoyama > 0.05, urban > 0.05, okuyama > 0.05) 
+
 # Write to CSV
 ag_dataset %>% 
   # We need to add 'KEY' in front of the 10-digit shuraku key code, otherwise GIS will interpret it as an integer, not a string.
   # I took these out with the Calculate Field tool in order to go back to the straight-up 10-digit code (key = !key![3:])
   mutate(gis_key = paste0('KEY', key)) %>% 
-  select(75, 79:81) %>%
-  write_csv('model_preds/full_model_preds.csv')
+  select(72:81) %>% 
+  write_csv('model_preds/lasso_prob_layers.csv')
 
 
 # Write only model preds to CSV
@@ -195,6 +207,7 @@ ag_dataset %>%
   mutate(gis_key = paste0('KEY', key)) %>%
   select(75:84) %>%
   write_csv('model_preds/all_model_preds.csv')
+
 
 
 
