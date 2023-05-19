@@ -6,11 +6,6 @@ Repository for St. Olaf CIR Project for 2022-23 academic year titled "Mapping *s
 
 ## Directory Information
 
-### `model_preds`
-
-This folder contains various different `.csv` files that hold different model predictions. The most notable of these are the `lasso_pair_prob_layers.csv` and `will_final_preds.csv`. The former holds our final model predictions, as well as the various probabilities assigned to each land type and whether they were solely one land type such as *satoyama* or were a mix of land types such as *satoyama_urban*. The latter holds Will's model's final predictions. 
-
-
 ### `lasso_models`
 
 This folder holds various scripts that were used to **build our lasso and multinomial models**. In the `full_model.R` file, the lasso models were built to select variables. The selected variables were then used to build a multinomial logistic regression model, which predicted land type for each shuraku.
@@ -31,6 +26,11 @@ In `final_model.R`, Will builds the multinomial logistic regression using stepwi
 ### `si_analysis`
 
 This folder contains some code used to generate analysis based on the SI mapping and zonal analysis we did in GIS. Results can be found in Google Slides --> "PrU w/CIR 2022-23/A-M-R Materials/Comparison of Means Analysis: Plots and Statistics"
+
+
+### `model_preds`
+
+This folder contains various different `.csv` files that hold different model predictions. The most notable of these are the `lasso_pair_prob_layers.csv` and `will_final_preds.csv`. The former holds our final model predictions, as well as the various probabilities assigned to each land type and whether they were solely one land type such as *satoyama* or were a mix of land types such as *satoyama_urban*. The latter holds Will's model's final predictions. 
 
 
 ### `si_data`
